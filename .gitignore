@@ -5,4 +5,12 @@ __pycache__/
 .DS_Store
 data/raw/reports/*.pdf
 venv/
+.venv/
 *.pkl
+.next/
+node_modules/
+dist/
+build/
+*.log
+.claude/
+CUsersUSER.claudeplans/

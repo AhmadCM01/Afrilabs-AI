@@ -1,22 +1,25 @@
+import os
+import sys
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
-import sys
-import os
 
-# Add src to path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+# Add the project root to the python path so we can import from src
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import the RAG chain function
-from rag_chain import query_rag_chain
+from src.rag_chain import query_rag_chain
 
-app = FastAPI(title="AfriLabs AI API", version="1.0.0")
+app = FastAPI(
+    title="AfriLabs AI API",
+    description="Backend API for the AfriLabs AI knowledge assistant",
+    version="1.0.0"
+)
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js dev server
+    allow_origins=["*"],  # To handle localhost development with Next.js/React
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,8 +52,8 @@ async def chat_endpoint(request: ChatRequest):
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    return {"status": "healthy", "service": "AfriLabs AI API"}
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("backend:app", host="0.0.0.0", port=8000, reload=True)
