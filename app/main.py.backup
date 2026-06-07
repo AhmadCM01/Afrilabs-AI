@@ -1,0 +1,504 @@
+import streamlit as st
+import os
+import sys
+import time
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from src.rag_chain import query_rag_chain
+from app.components import display_sidebar, display_source_expander
+
+# Page configuration
+st.set_page_config(
+    page_title="AfriLabs AI",
+    page_icon="🌍",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://afrilabs.com',
+        'Report a bug': "https://github.com/afrilabs/afrilabs-ai/issues",
+        'About': "# AfriLabs AI\nAfrica's Wisdom Assistant - Powered by RAG"
+    }
+)
+
+# Custom CSS for modern, cool interface with excellent readability
+st.markdown("""
+<style>
+    /* Import clean, highly readable font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+    /* Base styles - cool, modern foundation */
+    .stApp {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc; /* slate-50 - cool off-white */
+        color: #1e293b; /* slate-800 - dark charcoal for maximum readability */
+    }
+
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+
+    /* Main container - centered and constrained width */
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    /* Sidebar styling - subtle elevation */
+    .css-1d391kg {
+        background-color: #f1f5f9; /* slate-100 - slightly deeper than main bg */
+        border-right: 1px solid #e2e8f0; /* slate-200 - soft divider */
+    }
+
+    .sidebar-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .sidebar-header {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #334155; /* slate-700 */
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .sidebar-section {
+        margin-bottom: 2rem;
+    }
+
+    .sidebar-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #475569; /* slate-600 */
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .sidebar-text {
+        color: #64748b; /* slate-500 */
+        line-height: 1.6;
+    }
+
+    /* Chat container */
+    .chat-container {
+        /* Handled by main container */
+    }
+
+    /* Chat messages - modern bubble design */
+    .stChatMessage {
+        padding: 1rem;
+        margin: 0.75rem 0;
+        border-radius: 16px;
+        max-width: 80%;
+        word-wrap: break-word;
+        border: 1px solid transparent; /* for consistent hover */
+        transition: all 0.2s ease;
+    }
+
+    .stChatMessage:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Assistant message (AI response) - right-aligned */
+    [data-testid="stChatMessage"][data-role="assistant"] {
+        background-color: #ffffff;
+        border-color: #e2e8f0;
+        margin-left: auto; /* push to right */
+        margin-right: 0;
+    }
+
+    /* User message - left-aligned with cool accent */
+    [data-testid="stChatMessage"][data-role="user"] {
+        background-color: #eff6ff; /* blue-50 - very light cool blue */
+        border-color: #bfdbfe; /* blue-200 */
+        margin-right: auto; /* push to left */
+        margin-left: 0;
+    }
+
+    /* Message text styling */
+    .stChatMessage p {
+        color: #1e293b; /* slate-800 */
+        line-height: 1.7;
+    }
+
+    .stChatMessage strong {
+        color: #0f172a; /* slate-900 */
+    }
+
+    /* Input field - modern and inviting */
+    .stTextInput > div > div > input {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.85rem 1.25rem;
+        font-size: 1rem;
+        color: #1e293b;
+        transition: all 0.2s ease;
+    }
+
+    .stTextInput > div > div > input:focus {
+        border-color: #3b82f6; /* blue-500 - cool primary */
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        outline: none;
+    }
+
+    .stTextInput > div > div > input::placeholder {
+        color: #94a3b8; /* slate-400 */
+        opacity: 0.7;
+    }
+
+    /* Button styling - modern and accessible */
+    .stButton > button {
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 0.95rem;
+        padding: 0.5rem 1.5rem;
+    }
+
+    /* Primary button - clear call to action */
+    .stButton > button[kind="primary"] {
+        background-color: #2563eb; /* blue-600 */
+        color: #ffffff;
+    }
+
+    .stButton > button[kind="primary"]:hover {
+        background-color: #1d4ed8; /* blue-700 */
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+    }
+
+    .stButton > button[kind="primary"]:active {
+        transform: translateY(0);
+    }
+
+    /* Secondary button - subtle action */
+    .stButton > button[kind="secondary"] {
+        background-color: transparent;
+        color: #2563eb;
+        border: 1px solid #bfdbfe; /* blue-200 */
+    }
+
+    .stButton > button[kind="secondary"]:hover {
+        background-color: #eff6ff; /* blue-50 */
+        color: #1d4ed8; /* blue-700 */
+        transform: translateY(-1px);
+    }
+
+    .stButton > button[kind="secondary"]:active {
+        transform: translateY(0);
+    }
+
+    /* Source expander - clean and organized */
+    .streamlit-expanderHeader {
+        font-weight: 600;
+        color: #334155; /* slate-700 */
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .streamlit-expanderHeader:hover {
+        background-color: #f1f5f9;
+        border-color: #e2e8f0;
+    }
+
+    .streamlit-expanderContent {
+        background-color: #ffffff;
+        border-radius: 0 0 10px 10px;
+        border: 1px solid #e2e8f0;
+        border-top: none;
+        padding: 1rem;
+        margin-top: -1px; /* connect to header */
+    }
+
+    /* Source item - distinct but harmonious */
+    .source-item {
+        background-color: #f8fafc;
+        border-left: 3px solid #2563eb; /* blue-600 accent */
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .source-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .source-title {
+        font-weight: 600;
+        color: #1e293b; /* slate-800 */
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .source-meta {
+        font-size: 0.875rem;
+        color: #64748b; /* slate-500 */
+        margin-bottom: 0.75rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .source-content {
+        font-style: italic;
+        color: #475569; /* slate-600 */
+        border-left: 2px solid #e2e8f0;
+        padding-left: 1rem;
+        margin-top: 0.5rem;
+        line-height: 1.6;
+    }
+
+    /* Link styling in sources */
+    .source-item a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .source-item a:hover {
+        text-decoration: underline;
+    }
+
+    /* Loading animation - subtle and cool */
+    .loading-spinner {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+
+    .loading-spinner div {
+        width: 8px;
+        height: 8px;
+        background-color: #2563eb;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .loading-spinner div:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .loading-spinner div:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 0.6; }
+        50% { opacity: 1; }
+        100% { opacity: 0.6; }
+    }
+
+    /* Welcome message - warm and inviting */
+    .welcome-message {
+        text-align: center;
+        padding: 3rem;
+        color: #475569; /* slate-600 */
+    }
+
+    .welcome-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        display: block;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* Responsive design - excellent mobile experience */
+    @media (max-width: 768px) {
+        .main .block-container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .stChatMessage {
+            max-width: 90%;
+            margin: 0.5rem 0;
+            padding: 0.85rem;
+        }
+
+        [data-testid="stChatMessage"][data-role="assistant"] {
+            margin-left: 5%;
+        }
+
+        [data-testid="stChatMessage"][data-role="user"] {
+            margin-right: 5%;
+        }
+
+        .sidebar-content {
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar-header {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-message {
+            padding: 2rem;
+        }
+
+        .welcome-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+    }
+
+    /* Ultra-mobile adjustments */
+    @media (max-width: 480px) {
+        .main .block-container {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .stChatMessage {
+            max-width: 95%;
+            margin: 0.4rem 0;
+            padding: 0.75rem;
+        }
+
+        .welcome-message {
+            padding: 1.5rem;
+        }
+
+        .welcome-icon {
+            font-size: 3rem;
+        }
+    }
+</style>
+""", unsafe_allow_html=True)
+
+def initialize_session_state():
+    """Initialize session state variables."""
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    if "rag_initialized" not in st.session_state:
+        st.session_state.rag_initialized = False
+
+def display_welcome():
+    """Display welcome message when no chat history."""
+    if not st.session_state.messages:
+        st.markdown("""
+        <div class="welcome-message">
+            <div class="welcome-icon">🌍</div>
+            <h2>Welcome to AfriLabs AI</h2>
+            <p>Ask me anything about AfriLabs' programmes, reports, hubs, and initiatives across Africa.</p>
+            <p>Try questions like:</p>
+            <div style="text-align: left; max-width: 400px; margin: 1.5rem auto;">
+                <p>• What is the AfriLabs Capacity Building Programme?</p>
+                <p>• Which innovation hubs are in West Africa?</p>
+                <p>• What are the key findings from the 2024 Impact Report?</p>
+                <p>• How can organizations join the AfriLabs network?</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+def display_chat_history():
+    """Display chat history with improved styling."""
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+            # Display sources if available
+            if "sources" in message and message["sources"]:
+                display_source_expander(message["sources"])
+
+def main():
+    """Main application function."""
+    initialize_session_state()
+
+    # Sidebar
+    with st.sidebar:
+        display_sidebar()
+
+    # Main chat interface
+    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+
+    # Header - clean and modern
+    st.markdown('<h1 style="text-align: center; color: #1e293b; margin-bottom: 0.5rem; font-weight: 700;">AfriLabs AI</h1>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align: center; color: #64748b; margin-bottom: 2rem;">Africa\'s Wisdom Assistant - Powered by RAG</p>', unsafe_allow_html=True)
+
+    # Welcome message or chat history
+    if not st.session_state.messages:
+        display_welcome()
+    else:
+        display_chat_history()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Chat input
+    if prompt := st.chat_input("Ask a question about AfriLabs..."):
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        # Display user message immediately
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        # Get AI response with loading animation
+        with st.chat_message("assistant"):
+            # Loading spinner
+            loading_placeholder = st.empty()
+            with loading_placeholder.container():
+                st.markdown("""
+                <div class="loading-spinner">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <span>Searching AfriLabs knowledge base...</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+            try:
+                result = query_rag_chain(prompt)
+                answer = result["answer"]
+                sources = result["sources"]
+
+                # Remove loading spinner
+                loading_placeholder.empty()
+
+                st.markdown(answer)
+
+                # Add AI message to chat history
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": answer,
+                    "sources": sources
+                })
+
+                # Display sources in an expander
+                if sources:
+                    display_source_expander(sources)
+
+            except Exception as e:
+                loading_placeholder.empty()
+                error_msg = f"Sorry, I encountered an error: {str(e)}"
+                st.error(error_msg)
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": error_msg
+                })
+
+if __name__ == "__main__":
+    main()

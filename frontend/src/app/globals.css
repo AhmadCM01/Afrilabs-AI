@@ -1,0 +1,185 @@
+/* ─────────────────────────────────────────
+   Google Font — must be first
+   ───────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────
+   Design Tokens
+   ───────────────────────────────────────── */
+@theme {
+  --color-cream:     #FBFBFA;
+  --color-sidebar:   #F7F4EF;
+  --color-border:    #E5E0D8;
+  --color-navy:      #1A3B5C;
+  --color-teal:      #3A8C8A;
+  --color-gold:      #E09A1A;
+  --color-text-1:    #111827;
+  --color-text-2:    #4B5563;
+  --color-text-3:    #9CA3AF;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+/* ─────────────────────────────────────────
+   Hard Reset
+   ───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { height: 100%; }
+body {
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #FBFBFA;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+#__next { height: 100%; }
+textarea { resize: none; }
+.no-scroll { overflow: hidden; }
+
+/* ─────────────────────────────────────────
+   App Shell — the ONLY layout that matters
+   ───────────────────────────────────────── */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--color-cream);
+}
+
+/* Sidebar — rigid 260px, never shrinks, never grows */
+.app-sidebar {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-sidebar);
+  border-right: 1px solid var(--color-border);
+  flex-shrink: 0;
+  overflow: hidden;
+  /* mobile: slide off-screen */
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              min-width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              max-width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.app-sidebar.open  { transform: translateX(0); }
+
+/* Desktop: sidebar supports slide collapse like Gemini */
+@media (min-width: 1024px) {
+  .app-sidebar {
+    position: static;
+    transform: none !important;
+  }
+  .app-sidebar.collapsed {
+    width: 0px;
+    min-width: 0px;
+    max-width: 0px;
+    border-right-width: 0px;
+    overflow: hidden;
+  }
+}
+
+/* Main panel — takes remaining width */
+.app-main {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────
+   Scrollbar
+   ───────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #D4C9BC; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #B8ADA0; }
+
+/* ─────────────────────────────────────────
+   Prose — AI markdown
+   ───────────────────────────────────────── */
+.prose-afrilabs { line-height: 1.7; font-size: 0.92rem; color: #1F2937; }
+.prose-afrilabs p            { margin-bottom: 0.95rem; }
+.prose-afrilabs p:last-child { margin-bottom: 0; }
+.prose-afrilabs strong       { font-weight: 700; color: #111827; }
+.prose-afrilabs em           { font-style: italic; }
+.prose-afrilabs h1, .prose-afrilabs h2, .prose-afrilabs h3 {
+  font-weight: 800; line-height: 1.35;
+  margin-top: 1.75rem; margin-bottom: 0.75rem;
+  color: #1A3B5C;
+}
+.prose-afrilabs h1 { font-size: 1.35rem; }
+.prose-afrilabs h2 { font-size: 1.2rem; }
+.prose-afrilabs h3 { font-size: 1.05rem; }
+.prose-afrilabs ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+.prose-afrilabs ol { list-style: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+.prose-afrilabs li { margin-bottom: 0.4rem; }
+.prose-afrilabs code {
+  background: #EEF2F7; color: #1A3B5C;
+  padding: 0.15em 0.4em; border-radius: 4px;
+  font-family: 'Fira Code', monospace; font-size: 0.875em;
+}
+.prose-afrilabs pre {
+  background: #F0F5F8; border: 1px solid #D4E2EE;
+  border-radius: 8px; padding: 1rem; overflow-x: auto; margin-bottom: 0.75rem;
+}
+.prose-afrilabs pre code { background: none; padding: 0; color: #122740; }
+.prose-afrilabs a { color: #1A3B5C; text-decoration: underline; text-underline-offset: 3px; }
+.prose-afrilabs hr { border: none; border-top: 1px solid #E5E0D8; margin: 1rem 0; }
+
+/* ─────────────────────────────────────────
+   Animations
+   ───────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+  40%            { opacity: 1;   transform: scale(1); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(58, 140, 138, 0.2), 0 0 10px rgba(58, 140, 138, 0.1); }
+  50%      { box-shadow: 0 0 12px rgba(58, 140, 138, 0.5), 0 0 20px rgba(58, 140, 138, 0.2); }
+}
+@keyframes bounceSubtle {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+.animate-fade-slide-up { animation: fadeSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-in       { animation: fadeIn 0.25s ease-out forwards; }
+.animate-pulse-glow    { animation: pulseGlow 3s infinite ease-in-out; }
+.animate-bounce-subtle { animation: bounceSubtle 2s infinite ease-in-out; }
+
+/* Thinking dots */
+.dot-pulse { display: flex; align-items: center; gap: 6px; padding: 4px 0; }
+.dot-pulse span {
+  display: inline-block; width: 7px; height: 7px;
+  border-radius: 50%; background: #1A3B5C;
+  animation: blink 1.4s infinite ease-in-out;
+}
+.dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
+.dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
+
+/* Focus ring */
+:focus-visible { outline: 2px solid #3A8C8A; outline-offset: 2px; border-radius: 8px; }
+
+/* Selection */
+::selection { background-color: rgba(58, 140, 138, 0.15); color: #1A3B5C; }
+

@@ -1,0 +1,8 @@
+.env
+vectorstore/
+__pycache__/
+*.pyc
+.DS_Store
+data/raw/reports/*.pdf
+venv/
+*.pkl

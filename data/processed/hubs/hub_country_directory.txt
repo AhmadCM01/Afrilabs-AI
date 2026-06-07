@@ -1,0 +1,65 @@
+AfriLabs Innovation Hub Directory by Country and Region
+
+AfriLabs is Africa's largest network of innovation hubs. Below is a directory of AfriLabs member hubs organized by country. AfriLabs member innovation hubs are located in the following countries: Algeria, Burkina Faso, Burundi, Cameroon, Congo Democratic Republic, Egypt, Equatorial Guinea, Ghana, Guinea, Ivory Coast, Kenya, Lesotho, Malawi, Nigeria, Sierra Leone, South Africa, Tanzania, Tunisia, Uganda, and Zimbabwe. These hubs span Northern Africa, Western Africa, Central Africa, Eastern Africa, and Southern Africa.
+
+Country: Algeria (Region: Northern Africa)
+  Hub: Technopole Constantine Hill
+
+Country: Burkina Faso (Region: Western Africa)
+  Hub: Mektoub
+
+Country: Burundi (Region: Central Africa)
+  Hub: Burundi Business Incubator
+
+Country: Cameroon (Region: Central Africa)
+  Hubs: African Women in Tech Startups; Boris Bison Youth Empowerment Business Incubator (BBYEBI); TiC Foundation
+
+Country: Congo Democratic Republic / DRC (Region: Central Africa)
+  Hubs: Diambilay Business Center; KivuTech
+
+Country: Egypt (Region: Northern Africa)
+  Hub: Aria Ventures
+
+Country: Equatorial Guinea (Region: Central Africa)
+  Hub: CETESA - Centro de Estudios para la Transformacion Economica y Social de Africa
+
+Country: Ghana (Region: Western Africa)
+  Hubs: Enactus UMaT; ILM Africa LBG; Innovators Up; Inovtech Foundation; Wislaw Education and Support Fund
+
+Country: Guinea (Region: Western Africa)
+  Hub: Ouskei Academy
+
+Country: Ivory Coast / Cote d'Ivoire (Region: Western Africa)
+  Hub: IncubIvoir
+
+Country: Kenya (Region: Eastern Africa)
+  Hubs: Africa Tech Space; JHub Africa; Owl Innovation Labs; Velex Hub; Vortex Central
+
+Country: Lesotho (Region: Southern Africa)
+  Hub: Makhala Thekiso Foundation
+
+Country: Malawi (Region: Southern Africa)
+  Hubs: NxtGen Labs; Phukira
+
+Country: Nigeria (Region: Western Africa)
+  Hubs: African Center for Enterprise and Capacity Development; AlphaZone Tech Hub; CIATECH Africa; Climate Emerge Innovation Development (CEID) Hub; Collective Lab (Nile University of Nigeria); CorestreamNG; Darey.io Xterns Community; Ice Hub; Innovia Labs; Kristina Jade Center; Lhaude Africa; Midtown Tech Hub; Mswitch; NASENI Innovation Hub; Nebiant Analytics; She Leads Africa; The Hive Incubator; The Incubator Hub
+
+Country: Sierra Leone (Region: Western Africa)
+  Hub: Craving Venture
+
+Country: South Africa (Region: Southern Africa)
+  Hubs: Anzisha; Empire Partner Foundation; Graca Machel Trust Women Creating Wealth; Great North Business Incubator; Im-In Startup Hub; Lesotho Entrepreneurship Hub and Seed Financing Facility; OceanHub Africa; Savant Technology Incubator; SU LaunchLab (Stellenbosch University); Trailblazer Digital Hub; University of Cape Town Financial Innovation Hub; Yanda Centre of Innovation and Entrepreneurship
+
+Country: Tanzania (Region: Eastern Africa)
+  Hub: Shamba Box
+
+Country: Tunisia (Region: Northern Africa)
+  Hub: DigiArtLivingLab (DALL)
+
+Country: Uganda (Region: Eastern Africa)
+  Hubs: Ogandaze Africa Foundation; RLabs Uganda
+
+Country: Zimbabwe (Region: Southern Africa)
+  Hub: Eight2Five Innovation Hub
+
+Summary: AfriLabs has innovation hubs across 20 African countries. Nigeria, South Africa, Kenya, and Ghana have the highest concentration of member hubs. Countries with AfriLabs innovation hubs include Nigeria, Kenya, South Africa, Egypt, Ghana, Algeria, Burkina Faso, Burundi, Cameroon, Congo DRC, Equatorial Guinea, Guinea, Ivory Coast, Lesotho, Malawi, Sierra Leone, Tanzania, Tunisia, Uganda, and Zimbabwe.

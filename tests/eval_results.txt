@@ -1,0 +1,120 @@
+AfriLabs AI Retrieval Evaluation Results
+==================================================
+
+Total Questions: 8
+Successful Evaluations: 8
+Average Precision: 0.83
+Average Recall: 1.00
+Average F1 Score: 0.90
+
+Detailed Results:
+------------------------------
+
+Question 1: What is AfriLabs?
+  Precision: 1.00
+  Recall: 1.00
+  F1 Score: 1.00
+  Results Retrieved: 3
+  Relevant Results: 3
+  Expected Keywords: AfriLabs, innovation hubs, Africa, network
+  Top Results:
+    1. Building A Thriving Innovation Economy (3) (1) (report)
+       Content preview: Building A Thriving Innovation Economy
+products. We welcome partners to work with us to tell our col...
+    2. Wfp Innovation Challenge Drives Home Grown Food Systems Transformation In South Sudan (blog)
+       Content preview: Programme is the world’s largest humanitarian organization, saving lives in emergencies and using fo...
+
+Question 2: How many innovation hubs are in the AfriLabs network?
+  Precision: 1.00
+  Recall: 1.00
+  F1 Score: 1.00
+  Results Retrieved: 3
+  Relevant Results: 3
+  Expected Keywords: 500+, 53, countries, innovation hubs
+  Top Results:
+    1. AfriLabs Hub Country Directory (hub)
+       Content preview: AfriLabs is Africa's largest network of innovation hubs. Below is a directory of AfriLabs member hub...
+    2. Join Afrilabs Community (programme)
+       Content preview: Join AfriLabs Community AfriLabs > Join AfriLabs Community Join the AfriLabs Community Welcome to th...
+
+Question 3: What is the AfriLabs Capacity Building Programme (ACBP)?
+  Precision: 1.00
+  Recall: 1.00
+  F1 Score: 1.00
+  Results Retrieved: 3
+  Relevant Results: 3
+  Expected Keywords: Capacity Building Programme, ACBP, training, entrepreneurs
+  Top Results:
+    1. Our History (programme)
+       Content preview: Programme (ACBP) AfriLabs launches the AfriLabs Capacity Building Programme (ACBP), a 2 million euro...
+    2. AfriLabs Impact Report 2024 final EN (report)
+       Content preview: access to funding, market linkages, and strategic partnerships.
+AfriLabs Capacity Building Programme...
+
+Question 4: Which countries have AfriLabs innovation hubs?
+  Precision: 0.67
+  Recall: 1.00
+  F1 Score: 0.80
+  Results Retrieved: 3
+  Relevant Results: 2
+  Expected Keywords: Nigeria, Kenya, South Africa, Egypt, Ghana
+  Top Results:
+    1. AfriLabs Hub Country Directory (hub)
+       Content preview: Summary: AfriLabs has innovation hubs across 20 African countries. Nigeria, South Africa, Kenya, and...
+    2. AfriLabs Hub Country Directory (hub)
+       Content preview: AfriLabs is Africa's largest network of innovation hubs. Below is a directory of AfriLabs member hub...
+
+Question 5: What types of reports does AfriLabs publish?
+  Precision: 0.67
+  Recall: 1.00
+  F1 Score: 0.80
+  Results Retrieved: 3
+  Relevant Results: 2
+  Expected Keywords: ecosystem insights, impact report, annual report, research
+  Top Results:
+    1. Afrilabs Releases 2024 Impact Report Over 500 Innovation Hubs 280000 Lives Reached And A 1 Trillion Vision For Africas Digital (blog)
+       Content preview: future, Download the full 2024 AfriLabs Impact Report here: https://bit.ly/AfriLabs-Report-2024 Abou...
+    2. Afrilabs Releases 2024 Impact Report Over 500 Innovation Hubs 280000 Lives Reached And A 1 Trillion Vision For Africas Digital (blog)
+       Content preview: For more information about AfriLabs , visit www.afrilabs.com . For media inquiries, please contact p...
+
+Question 6: How can an innovation hub join AfriLabs?
+  Precision: 0.67
+  Recall: 1.00
+  F1 Score: 0.80
+  Results Retrieved: 3
+  Relevant Results: 2
+  Expected Keywords: join, membership, application, criteria
+  Top Results:
+    1. Join Afrilabs Community (programme)
+       Content preview: Join AfriLabs Community AfriLabs > Join AfriLabs Community Join the AfriLabs Community Welcome to th...
+    2. Join Afrilabs Community (programme)
+       Content preview: you updated every step of the way. For further inquiries, send an email to lekwot@afrilabs.com with ...
+
+Question 7: What initiatives does AfriLabs have for women entrepreneurs?
+  Precision: 0.67
+  Recall: 1.00
+  F1 Score: 0.80
+  Results Retrieved: 3
+  Relevant Results: 2
+  Expected Keywords: RevUp Women, female founders, women, entrepreneurship
+  Top Results:
+    1. AfriLabs Impact Report 2024 final EN (report)
+       Content preview: their potential to drive economic 
+growth and innovation, many 
+women entrepreneurs struggle to 
+sur...
+    2. Afrilabs Annual Gathering Pioneering Africas Digital Transformation 8 Years Of Innovation And Collaboration (blog)
+       Content preview: innovation and digital technologies to create sustainable businesses, generate jobs, and foster econ...
+
+Question 8: What is the AfriLabs annual gathering called?
+  Precision: 1.00
+  Recall: 1.00
+  F1 Score: 1.00
+  Results Retrieved: 3
+  Relevant Results: 3
+  Expected Keywords: Annual Gathering, meeting, conference, event
+  Top Results:
+    1. Our History (programme)
+       Content preview: launched AfriLabs Connect Dealroom 2023 AfriLabs held its 8th AfriLabs Annual Gathering in Kigali, R...
+    2. Afrilabs Announces Track Leads And Champions For Annual Gathering 2024 (blog)
+       Content preview: learning and collaboration. The AfriLabs Annual Gathering 2024 promises to be a landmark event with ...
