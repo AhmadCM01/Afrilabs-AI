@@ -19,4 +19,6 @@ dependencies = [
     "sentence-transformers>=5.5.1",
     "streamlit>=1.57.0",
     "tiktoken>=0.13.0",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
 ]

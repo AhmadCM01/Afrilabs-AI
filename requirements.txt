@@ -13,3 +13,5 @@ python-dotenv
 tiktoken
 sentence-transformers
 huggingface-hub
+fastapi
+uvicorn
