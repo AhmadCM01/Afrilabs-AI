@@ -3,7 +3,7 @@ import sys
 import pickle
 import shutil
 from dotenv import load_dotenv
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_community.vectorstores import Chroma
 
 # Load environment variables
@@ -24,8 +24,8 @@ def main(force_rebuild: bool = False):
     if not force_rebuild and os.path.exists(vectorstore_dir):
         # We can try to load the vectorstore and check the collection size
         try:
-            embeddings = HuggingFaceEmbeddings(
-                model_name="sentence-transformers/all-MiniLM-L6-v2"
+            embeddings = FastEmbedEmbeddings(
+                model_name="BAAI/bge-small-en-v1.5"
             )
             vectorstore = Chroma(
                 persist_directory=vectorstore_dir,
@@ -49,8 +49,8 @@ def main(force_rebuild: bool = False):
     print(f"Loaded {len(chunks)} chunks from {chunks_path}")
 
     # Initialize embeddings
-    embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    embeddings = FastEmbedEmbeddings(
+        model_name="BAAI/bge-small-en-v1.5"
     )
 
     # Create vector store

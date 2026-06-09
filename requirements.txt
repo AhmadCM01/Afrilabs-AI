@@ -3,15 +3,12 @@ beautifulsoup4
 pymupdf
 langchain
 langchain-community
-langchain-huggingface
 langchain-groq
-langchain-openai
+fastembed
 chromadb
 groq
 streamlit
 python-dotenv
 tiktoken
-sentence-transformers
-huggingface-hub
 fastapi
 uvicorn

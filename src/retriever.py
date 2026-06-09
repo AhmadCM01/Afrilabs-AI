@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_community.vectorstores import Chroma
 
 # Load environment variables
@@ -11,11 +11,11 @@ _embeddings = None
 _vectorstore = None
 
 def get_embeddings():
-    """Get or initialize the HuggingFace embeddings model (cached)."""
+    """Get or initialize the FastEmbed embeddings model (cached)."""
     global _embeddings
     if _embeddings is None:
-        _embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        _embeddings = FastEmbedEmbeddings(
+            model_name="BAAI/bge-small-en-v1.5"
         )
     return _embeddings
 
