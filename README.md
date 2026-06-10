@@ -2,11 +2,18 @@
 
 AfriLabs AI is a RAG-powered chatbot designed for **AfriLabs**, Africa's largest network of 500+ innovation hubs across 53 countries. AfriLabs AI helps users query and gain insights from AfriLabs' programs, ecosystem reports, member hubs, blog content, and funding opportunities.
 
+## Live Deployments
+
+- **Frontend (Next.js + Vercel)**: [https://afrilabs-ai.vercel.app/](https://afrilabs-ai.vercel.app/)
+- **Backend (FastAPI + Render)**: [https://afrilabs-ai.onrender.com](https://afrilabs-ai.onrender.com)
+
+## Tech Stack Overview
 This implementation uses:
-- **Local embeddings** (HuggingFace sentence-transformers/all-MiniLM-L6-v2) — no API key needed for embeddings
-- **Groq API** (llama3-70b-8192) for fast LLM inference — free tier available
+- **Local Embeddings** (FastEmbed BGE-small-en-v1.5) — runs on a lightweight ONNX runtime without PyTorch (fits under 512MB RAM, 100% free)
+- **Groq API** (llama-3.3-70b-versatile) for fast LLM inference
 - **ChromaDB** for persistent vector storage
-- **Streamlit** for the interactive web UI
+- **Next.js & TypeScript** for the premium frontend UI
+- **FastAPI** for the backend API server
 - **LangChain** for RAG orchestration
 
 ## Features
@@ -45,13 +52,21 @@ afrilabs-ai/
 │   ├── embedder.py
 │   ├── retriever.py
 │   └── rag_chain.py
-├── app/
+├── app/ (Streamlit Web App)
 │   ├── main.py
 │   ├── components.py
 │   └── assets/
+├── frontend/ (Next.js React Frontend)
+│   ├── public/
+│   ├── src/
+│   │   ├── app/
+│   │   └── components/
+│   ├── package.json
+│   └── next.config.ts
 ├── tests/
 │   ├── test_retrieval.py
 │   └── eval_report.py
+├── backend.py (FastAPI Backend Server)
 ├── requirements.txt
 ├── .env
 ├── .gitignore
@@ -104,7 +119,7 @@ python src/hub_builder.py
 python src/chunker.py
 
 # 5. Embed chunks and save to ChromaDB
-python src/embedder.py
+python src/embedder.py --force
 ```
 
 ### 6. Launch Streamlit UI
@@ -145,36 +160,67 @@ This generates the summary test file at `tests/eval_results.txt`.
 
 ## Architecture
 
-AfriLabs AI follows a standard RAG (Retrieval-Augmented Generation) architecture:
+AfriLabs AI follows a decoupled Client-Server RAG (Retrieval-Augmented Generation) architecture:
 
-1. **Data Ingestion**: 
-   - `scraper.py`: Extracts blog and static web content
-   - `pdf_extractor.py`: Processes PDF reports from AfriLabs Ecosystem Insights
-   - `hub_builder.py`: Scrapes member hub information and builds documents
+```mermaid
+graph TD
+    %% Ingestion Layer
+    subgraph Ingestion["Ingestion Layer"]
+        Scraper["scraper.py<br>(requests + BS4)"] -->|"Scrapes Blog & Pages"| ProcessedDir
+        PDF["pdf_extractor.py<br>(PyMuPDF)"] -->|"Extracts Reports"| ProcessedDir
+        Hubs["hub_builder.py<br>(Web Directory)"] -->|"Builds Hub Profiles"| ProcessedDir
+    end
 
-2. **Data Processing**: 
-   - Outputs cleaned text files + metadata.json to `data/processed/`
+    %% Storage & Indexing Layer
+    subgraph Indexing["Indexing & Storage Layer"]
+        ProcessedDir["data/processed/<br>(Text + Metadata)"] --> Chunker["chunker.py<br>(Recursive Character Splitter)"]
+        Chunker --> Embedder["embedder.py<br>(FastEmbed BGE-small ONNX)"]
+        Embedder --> Chroma["ChromaDB<br>(vectorstore/)"]
+    end
 
-3. **Indexing & Storage**:
-   - `chunker.py`: Splits documents into chunks with metadata
-   - `embedder.py`: Generates embeddings using HuggingFace sentence-transformers
-   - Stores vectors in ChromaDB (`vectorstore/` directory)
+    %% Retrieval & Generation Layer
+    subgraph Generation["Retrieval & Generation Layer"]
+        Retriever["retriever.py<br>(Similarity Search + Filters)"] -->|"Retrieves Chunks"| Chroma
+        RAGChain["rag_chain.py<br>(LangChain)"] -->|"Sends Context"| LLM["Groq Cloud LLM<br>(llama-3.3-70b-versatile)"]
+    end
 
-4. **Retrieval & Generation**:
-   - `retriever.py`: Performs similarity search with optional metadata filtering
-   - `rag_chain.py`: Orchestrates Groq's Llama 3 70B for question answering with source citations
+    %% Presentation Layer
+    subgraph Presentation["Presentation Layer (Client-Server)"]
+        VercelFront["Vercel Frontend<br>(Next.js App)"] -->|"POST /api/chat"| RenderBack["Render Backend<br>(FastAPI App)"]
+        RenderBack -->|"Queries"| RAGChain
+        RAGChain -->|"Returns Answer & Sources"| RenderBack
+        RenderBack -->|"JSON Response"| VercelFront
+    end
 
-5. **User Interface**:
-   - `app/main.py`: Streamlit web application for user interaction
+    %% Style classes
+    classDef ingestion fill:#e1f5fe,stroke:#0288d1,stroke-width:1.5px;
+    classDef indexing fill:#e8f5e9,stroke:#388e3c,stroke-width:1.5px;
+    classDef generation fill:#fff3e0,stroke:#f57c00,stroke-width:1.5px;
+    classDef presentation fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1.5px;
+
+    class Scraper,PDF,Hubs ingestion;
+    class ProcessedDir,Chunker,Embedder,Chroma indexing;
+    class Retriever,RAGChain,LLM generation;
+    class VercelFront,RenderBack presentation;
+```
+
+### Flow Breakdown:
+1. **Data Ingestion & Processing**: Web scrapers and extractors output cleaned text and metadata to `data/processed/`.
+2. **Indexing**: Chunks are processed and embedded locally using FastEmbed and stored in a persistent ChromaDB instance.
+3. **Retrieval**: When a query comes in, the retriever fetches relevant context matching the query.
+4. **Generation**: The RAG chain feeds the retrieved context and user query into the Groq-hosted Llama 3 70B model to generate an answer with source citations.
+5. **Presentation**: The Next.js frontend (deployed on Vercel) calls the FastAPI backend (deployed on Render), providing a premium, interactive chat user interface.
 
 ## Technology Stack
 
-- **Language**: Python 3.11+
+- **Language**: Python 3.11+ (Backend), TypeScript / React (Frontend)
+- **Frontend Framework**: Next.js v15
+- **Backend API**: FastAPI + Uvicorn
 - **LLM Orchestration**: LangChain v0.2+
-- **Embeddings**: HuggingFace sentence-transformers/all-MiniLM-L6-v2 (local)
-- **LLM**: Groq API (llama3-70b-8192)
+- **Embeddings**: FastEmbed `BAAI/bge-small-en-v1.5` (ONNX Runtime, local, no PyTorch)
+- **LLM**: Groq API (llama-3.3-70b-versatile)
 - **Vector Database**: ChromaDB (persistent, local)
-- **Frontend**: Streamlit
+- **Alternate UI**: Streamlit (under `app/`)
 - **Web Scraping**: requests + BeautifulSoup4
 - **PDF Processing**: PyMuPDF (fitz)
 - **Environment**: python-dotenv
