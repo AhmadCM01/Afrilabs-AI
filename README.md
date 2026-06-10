@@ -2,6 +2,27 @@
 
 AfriLabs AI is a RAG-powered chatbot designed for **AfriLabs**, Africa's largest network of 500+ innovation hubs across 53 countries. AfriLabs AI helps users query and gain insights from AfriLabs' programs, ecosystem reports, member hubs, blog content, and funding opportunities.
 
+## Architecture
+
+AfriLabs AI follows a decoupled Client-Server RAG (Retrieval-Augmented Generation) architecture:
+
+```mermaid
+graph TD
+    A[Next.js 15 Workstation Client] <-->|HTTP /api/chat| B[FastAPI Backend Server]
+    B -->|RAG Chain Execution| C[LangChain Orchestrator]
+    C -->|Query Embeddings| D[FastEmbed Model]
+    C -->|Vector Search| E[Chroma Vector Database]
+    C -->|Llama 3 70B Query| F[Groq Cloud API]
+    B -->|Ingestion Pipeline| G[Data Scrapers & Extractors]
+```
+
+### Flow Breakdown
+1. **Data Ingestion & Processing**: Web scrapers and extractors output cleaned text and metadata to `data/processed/`.
+2. **Indexing**: Chunks are processed and embedded locally using FastEmbed and stored in a persistent ChromaDB instance.
+3. **Retrieval**: When a query comes in, the retriever fetches relevant context matching the query.
+4. **Generation**: The RAG chain feeds the retrieved context and user query into the Groq-hosted Llama 3 70B model to generate an answer with source citations.
+5. **Presentation**: The Next.js frontend (deployed on Vercel) calls the FastAPI backend (deployed on Render), providing a premium, interactive chat user interface.
+
 ## Live Deployments
 
 - **Frontend (Next.js + Vercel)**: [https://afrilabs-ai.vercel.app/](https://afrilabs-ai.vercel.app/)
@@ -157,59 +178,6 @@ To view and generate the evaluation precision report:
 python tests/eval_report.py
 ```
 This generates the summary test file at `tests/eval_results.txt`.
-
-## Architecture
-
-AfriLabs AI follows a decoupled Client-Server RAG (Retrieval-Augmented Generation) architecture:
-
-```mermaid
-graph TD
-    %% Ingestion Layer
-    subgraph Ingestion["Ingestion Layer"]
-        Scraper["scraper.py<br>(requests + BS4)"] -->|"Scrapes Blog & Pages"| ProcessedDir
-        PDF["pdf_extractor.py<br>(PyMuPDF)"] -->|"Extracts Reports"| ProcessedDir
-        Hubs["hub_builder.py<br>(Web Directory)"] -->|"Builds Hub Profiles"| ProcessedDir
-    end
-
-    %% Storage & Indexing Layer
-    subgraph Indexing["Indexing & Storage Layer"]
-        ProcessedDir["data/processed/<br>(Text + Metadata)"] --> Chunker["chunker.py<br>(Recursive Character Splitter)"]
-        Chunker --> Embedder["embedder.py<br>(FastEmbed BGE-small ONNX)"]
-        Embedder --> Chroma["ChromaDB<br>(vectorstore/)"]
-    end
-
-    %% Retrieval & Generation Layer
-    subgraph Generation["Retrieval & Generation Layer"]
-        Retriever["retriever.py<br>(Similarity Search + Filters)"] -->|"Retrieves Chunks"| Chroma
-        RAGChain["rag_chain.py<br>(LangChain)"] -->|"Sends Context"| LLM["Groq Cloud LLM<br>(llama-3.3-70b-versatile)"]
-    end
-
-    %% Presentation Layer
-    subgraph Presentation["Presentation Layer (Client-Server)"]
-        VercelFront["Vercel Frontend<br>(Next.js App)"] -->|"POST /api/chat"| RenderBack["Render Backend<br>(FastAPI App)"]
-        RenderBack -->|"Queries"| RAGChain
-        RAGChain -->|"Returns Answer & Sources"| RenderBack
-        RenderBack -->|"JSON Response"| VercelFront
-    end
-
-    %% Style classes
-    classDef ingestion fill:#e1f5fe,stroke:#0288d1,stroke-width:1.5px;
-    classDef indexing fill:#e8f5e9,stroke:#388e3c,stroke-width:1.5px;
-    classDef generation fill:#fff3e0,stroke:#f57c00,stroke-width:1.5px;
-    classDef presentation fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1.5px;
-
-    class Scraper,PDF,Hubs ingestion;
-    class ProcessedDir,Chunker,Embedder,Chroma indexing;
-    class Retriever,RAGChain,LLM generation;
-    class VercelFront,RenderBack presentation;
-```
-
-### Flow Breakdown:
-1. **Data Ingestion & Processing**: Web scrapers and extractors output cleaned text and metadata to `data/processed/`.
-2. **Indexing**: Chunks are processed and embedded locally using FastEmbed and stored in a persistent ChromaDB instance.
-3. **Retrieval**: When a query comes in, the retriever fetches relevant context matching the query.
-4. **Generation**: The RAG chain feeds the retrieved context and user query into the Groq-hosted Llama 3 70B model to generate an answer with source citations.
-5. **Presentation**: The Next.js frontend (deployed on Vercel) calls the FastAPI backend (deployed on Render), providing a premium, interactive chat user interface.
 
 ## Technology Stack
 
